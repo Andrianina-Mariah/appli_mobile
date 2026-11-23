@@ -1,0 +1,8 @@
+Outil: Vue, typescript, ionic, sqlite
+TP: créer une application mobile
+Thème au choix, sauf celui du TP. L'application contient:
+1- Login avec Firebase
+2- Liste et fiche
+3- Formulaire avec upload d'image
+4- Notification et backend sur Firebase
+Livrable: le fichier APK
