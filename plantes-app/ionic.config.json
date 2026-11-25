@@ -1,0 +1,7 @@
+{
+  "name": "plantes-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
