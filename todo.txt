@@ -6,3 +6,10 @@ Thème au choix, sauf celui du TP. L'application contient:
 3- Formulaire avec upload d'image
 4- Notification et backend sur Firebase
 Livrable: le fichier APK
+
+THEME: Gestion de plantes d'intérieur / jardin
+
+Liste : mes plantes, fiche : espèce, exposition, fréquence d'arrosage
+Formulaire : ajouter une plante avec photo
+Notification : rappel d'arrosage (cas d'usage très naturel pour les notifications)
+Avantage : les notifications ont une vraie utilité.
