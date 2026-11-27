@@ -38,8 +38,14 @@ export const sqliteService = {
       notes TEXT,
       updatedAt INTEGER NOT NULL,
       sync_pending INTEGER NOT NULL DEFAULT 1,
-      deleted INTEGER NOT NULL DEFAULT 0
+      deleted INTEGER NOT NULL DEFAULT 0,
+      historiqueArrosage TEXT NOT NULL DEFAULT '[]'
     )`);
+    try {
+      await database.execute("ALTER TABLE plants ADD COLUMN historiqueArrosage TEXT NOT NULL DEFAULT '[]'");
+    } catch {
+      // La colonne existe déjà sur les bases précédemment migrées.
+    }
   },
   async getAll(userId: string): Promise<LocalPlant[]> {
     await this.init();
@@ -54,28 +60,40 @@ export const sqliteService = {
       updatedAt: Number(row.updatedAt),
       sync_pending: Number(row.sync_pending),
       deleted: Number(row.deleted),
+      historiqueArrosage: (() => {
+        try { return JSON.parse(row.historiqueArrosage ?? '[]'); }
+        catch { return []; }
+      })(),
     })) as LocalPlant[];
   },
   async getAllForNotifications(): Promise<LocalPlant[]> {
     await this.init();
     const result = await database!.query('SELECT * FROM plants WHERE deleted = 0');
-    return (result.values ?? []) as LocalPlant[];
+    return (result.values ?? []).map((row) => ({
+      ...row,
+      historiqueArrosage: (() => { try { return JSON.parse(row.historiqueArrosage ?? '[]'); } catch { return []; } })(),
+    })) as LocalPlant[];
   },
   async getById(id: string): Promise<LocalPlant | null> {
     await this.init();
     const result = await database!.query('SELECT * FROM plants WHERE id = ? AND deleted = 0', [id]);
-    return (result.values?.[0] as LocalPlant) ?? null;
+    const row = result.values?.[0] as Record<string, unknown> | undefined;
+    if (!row) return null;
+    try { row.historiqueArrosage = JSON.parse(String(row.historiqueArrosage ?? '[]')); }
+    catch { row.historiqueArrosage = []; }
+    return row as unknown as LocalPlant;
   },
   async save(plant: Plant & { sync_pending?: number; deleted?: number }): Promise<void> {
     await this.init();
     await database!.run(
       `INSERT OR REPLACE INTO plants
-       (id,userId,nom,espece,exposition,frequenceArrosage,dernierArrosage,notifBaseId,photoUrl,notes,updatedAt,sync_pending,deleted)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+       (id,userId,nom,espece,exposition,frequenceArrosage,dernierArrosage,notifBaseId,photoUrl,notes,updatedAt,sync_pending,deleted,historiqueArrosage)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [plant.id, plant.userId, plant.nom, plant.espece, plant.exposition,
        plant.frequenceArrosage, plant.dernierArrosage, plant.notifBaseId,
        plant.photoUrl ?? null, plant.notes ?? null, plant.updatedAt,
-       plant.sync_pending ?? 1, plant.deleted ?? 0],
+       plant.sync_pending ?? 1, plant.deleted ?? 0,
+       JSON.stringify(plant.historiqueArrosage ?? [])],
     );
   },
   async markDeleted(id: string): Promise<void> {

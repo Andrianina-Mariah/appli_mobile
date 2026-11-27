@@ -65,6 +65,7 @@ export const plantService = {
       photoUrl: plant.photoUrl ?? null,
       notes: plant.notes ?? null,
       updatedAt: plant.updatedAt,
+      historiqueArrosage: plant.historiqueArrosage ?? [],
       serverTimestamp: serverTimestamp(),
     });
     await sqliteService.markSynced(plant.id);

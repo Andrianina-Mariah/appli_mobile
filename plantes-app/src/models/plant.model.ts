@@ -10,4 +10,5 @@ export interface Plant {
   photoUrl?: string;
   notes?: string;
   updatedAt: number;
+  historiqueArrosage?: string[];
 }
