@@ -1,0 +1,26 @@
+Actions manuelles requises
+
+1. Firebase Console
+- Vérifier Authentication Email/Mot de passe.
+- Vérifier le mode de facturation Storage si nécessaire.
+- Remplacer les règles Firestore de test par les règles indiquées dans le TODO.
+- Ajouter une application Android dans Firebase si Push FCM est testé.
+- Placer google-services.json dans android/app/ seulement avec l'autorisation Firebase Android.
+- Android nécessite un fichier de configuration push valide pour compiler avec FCM sur certains appareils.
+
+2. Capacitor Android
+- Vérifier que appId io.ionic.starter convient ou le remplacer avant synchronisation finale.
+- Si tu testes sur Android 13+, autoriser les notifications et la caméra.
+- Exécuter npx cap sync android après les modifications natives.
+
+3. Fonctionnalités encore à finaliser sans dépendance réseau
+- Test réel des notifications locales sur appareil physique.
+- Test hors ligne SQLite et rejeu Firestore.
+- Test upload, remplacement et suppression Storage.
+- Test FCM avec message de console Firebase.
+- M8 onSnapshot recommandé mais non indispensable selon les priorités indiquées.
+- M7 annulation J'ai arrosé est partiellement prévue par le toast mais l'Annuler restaure l'ancien état.
+
+4. Sécurité
+- Ne pas publier google-services.json ni valeurs Firebase sensibles dans un dépôt public.
+- Les clés Web Firebase ne sont pas des secrets seuls, mais les règles Firestore restent obligatoires.
